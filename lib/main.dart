@@ -1,28 +1,72 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/route_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:high_court/root.dart';
+import 'package:high_court/config/config.dart';
+import 'package:high_court/constants/colors.dart';
+import 'package:high_court/screens/home_screen_main.dart';
+import 'package:high_court/screens/login_screen.dart';
 import 'package:hive/hive.dart';
+import 'package:sizer/sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initHiveForFlutter();
-  await Hive.openBox(HiveStore.defaultBoxName);
+  await Hive.openBox("myBox");
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var token;
+  handleAuth() {
+    setState(() {
+      token = Config.token;
+    });
+  }
+
+  @override
+  void initState() {
+    handleAuth();
+    super.initState();
+  }
+
+  handleUi() {
+    if (token == null) {
+      return const LoginScreen();
+    } else {
+      return const HomeScreenMain();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const Root(),
+    return Sizer(
+      builder: (BuildContext context, Orientation orientation,
+          DeviceType deviceType) {
+        return GraphQLProvider(
+          client: Config.initializeClient(),
+          child: GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            defaultTransition: Transition.zoom,
+            theme: ThemeData(
+              primaryColor: primaryColor,
+              appBarTheme: AppBarTheme(color: primaryColor),
+              textTheme: GoogleFonts.nunitoTextTheme(
+                Theme.of(context).textTheme,
+              ),
+            ),
+            home: handleUi(),
+          ),
+        );
+      },
     );
   }
 }

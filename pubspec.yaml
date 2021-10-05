@@ -37,6 +37,11 @@ dependencies:
   graphql_flutter: ^5.0.0
   get: ^4.3.8
   hive: ^2.0.4
+  google_fonts: ^2.1.0
+  sizer: ^2.0.15
+  collapsible_sidebar: ^2.0.1+2
+  cached_network_image: ^3.1.0
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:

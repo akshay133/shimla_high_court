@@ -1,65 +1,159 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:high_court/constants/colors.dart';
+import 'package:high_court/constants/custom_shapes.dart';
+import 'package:high_court/screens/home_screen_main.dart';
+import 'package:hive/hive.dart';
+import 'package:sizer/sizer.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _shapes = CustomShapes();
+
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
+
   final String query = """
   mutation LoginMutation(\$email: String!, \$password: String!) {
-  login(username: \$email, password: \$password) {
+  memberLogin(email: \$email, password: \$password) {
     id
     token
     username
+    avatar
+    email
   }
 }""";
+  final double _width = double.infinity;
+  late double _height = 2.h;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+          _height = 36.h;
+        }));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Mutation(
         options: MutationOptions(
-            document: gql(query),
-            onCompleted: (dynamic resultData) {
-              Get.snackbar("Login Success", "");
-            },
-            onError: (error) {
-              Get.snackbar("Error!", error!.graphqlErrors[0].message);
-            }),
+          document: gql(query),
+          onCompleted: (result) {
+            Get.snackbar("Login", "Success",
+                snackPosition: SnackPosition.BOTTOM, colorText: Colors.white);
+          },
+          onError: (error) {
+            Get.snackbar("Error!", error!.graphqlErrors[0].message,
+                snackPosition: SnackPosition.BOTTOM, colorText: Colors.white);
+          },
+        ),
         builder: (MultiSourceResult Function(Map<String, dynamic>,
                     {Object? optimisticResult})
                 runMutation,
             QueryResult? result) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(hintText: "email"),
-                ),
+          return Container(
+            color: primaryColor,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AnimatedContainer(
+                    width: _width,
+                    height: _height,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(6),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black.withOpacity(0.24),
+                              offset: const Offset(0, 5),
+                              spreadRadius: 4,
+                              blurRadius: 32),
+                        ]),
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.easeOutSine,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Text(
+                            "Sign In",
+                            style: _shapes.headlineTxtStyle,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: _shapes.textField(
+                                _emailController, "Enter email address", false),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: _shapes.textField(
+                                _passwordController, 'Password', true),
+                          ),
+                          SizedBox(
+                            height: 1.2.h,
+                          ),
+                          if (result!.isLoading && result.data == null)
+                            const CircularProgressIndicator()
+                          else
+                            ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: btnColor,
+                                    minimumSize: Size(double.infinity, 5.5.h),
+                                    shape: const StadiumBorder()),
+                                onPressed: () async {
+                                  if (_emailController.text.isEmpty ||
+                                      _passwordController.text.isEmpty) {
+                                    Get.snackbar(
+                                        "Error!", "All fields are required",
+                                        snackPosition: SnackPosition.BOTTOM,
+                                        colorText: Colors.white);
+                                  } else {
+                                    var resultMutaion = runMutation({
+                                      "email": _emailController.text.trim(),
+                                      "password":
+                                          _passwordController.text.trim()
+                                    });
+                                    var result =
+                                        await resultMutaion.networkResult;
+                                    var box = Hive.box("myBox");
+                                    box.put("token",
+                                        result!.data!['memberLogin']['token']);
+                                    box.put(
+                                        "name",
+                                        result.data!['memberLogin']
+                                            ['username']);
+                                    box.put("email",
+                                        result.data!['memberLogin']['email']);
+                                    Get.offAll(const HomeScreenMain());
+                                  }
+                                },
+                                child: const Text('login')),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(hintText: "password"),
-                ),
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    runMutation({
-                      "email": _emailController.text,
-                      "password": _passwordController.text
-                    });
-                  },
-                  child: const Text('login')),
-              if (result!.data != null)
-                Text('Result: \n ${result.data!["login"]["username"]}')
-              else
-                Container()
-            ],
+            ),
           );
         },
       ),
