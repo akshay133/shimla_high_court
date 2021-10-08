@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:high_court/constants/constants.dart';
 import 'package:high_court/constants/custom_shapes.dart';
-import 'package:high_court/controller/profile_controller.dart';
+import 'package:hive/hive.dart';
 import 'package:sizer/sizer.dart';
 
 class ProfileUi extends StatefulWidget {
@@ -14,13 +14,16 @@ class ProfileUi extends StatefulWidget {
 }
 
 class _ProfileUiState extends State<ProfileUi> {
-  final profileController = Get.put(ProfileController());
-  final customShapes = CustomShapes();
   double height = 10.h;
   double height2 = 10.h;
   double width = 10.w;
+  var name;
+  var email;
   @override
   void initState() {
+    var box = Hive.box("myBox");
+    name = box.get("name");
+    email = box.get("email");
     WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
           height = 15.h;
           height2 = 22.h;
@@ -40,7 +43,7 @@ class _ProfileUiState extends State<ProfileUi> {
             duration: const Duration(seconds: 1),
             child: Text(
               "My Profile",
-              style: customShapes.headlineTxtStyle.copyWith(
+              style: CustomShapes.headlineTxtStyle.copyWith(
                   color: Colors.black54,
                   fontSize: 30.sp,
                   fontWeight: FontWeight.bold),
@@ -52,7 +55,7 @@ class _ProfileUiState extends State<ProfileUi> {
           width: Get.width / 2,
           curve: Curves.elasticOut,
           padding: const EdgeInsets.all(12),
-          decoration: customShapes.boxDecoration,
+          decoration: CustomShapes.boxDecoration,
           duration: const Duration(seconds: 1),
           child: SingleChildScrollView(
             child: Column(
@@ -62,12 +65,12 @@ class _ProfileUiState extends State<ProfileUi> {
                   backgroundImage: CachedNetworkImageProvider(profileImg),
                 ),
                 Text(
-                  profileController.name,
-                  style: customShapes.bodyTxtStyle,
+                  name,
+                  style: CustomShapes.bodyTxtStyle,
                 ),
                 Text(
-                  profileController.email,
-                  style: customShapes.bodyTxtStyle,
+                  email,
+                  style: CustomShapes.bodyTxtStyle,
                 )
               ],
             ),

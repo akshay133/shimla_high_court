@@ -1,18 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:high_court/constants/custom_shapes.dart';
-import 'package:high_court/screens/my_services_screen.dart';
+import 'package:high_court/screens/due_payments_lists.dart';
 import 'package:sizer/sizer.dart';
 
-class DashBoardUi extends StatefulWidget {
-  const DashBoardUi({Key? key}) : super(key: key);
+class DuePaymentUI extends StatefulWidget {
+  const DuePaymentUI({Key? key}) : super(key: key);
 
   @override
-  State<DashBoardUi> createState() => _DashBoardUiState();
+  State<DuePaymentUI> createState() => _DuePaymentUIState();
 }
 
-class _DashBoardUiState extends State<DashBoardUi> {
+class _DuePaymentUIState extends State<DuePaymentUI> {
   double height = 8.h;
   @override
   void initState() {
@@ -33,7 +32,7 @@ class _DashBoardUiState extends State<DashBoardUi> {
             curve: Curves.elasticOut,
             duration: const Duration(seconds: 1),
             child: Text(
-              "Dashboard",
+              "Payments",
               style: CustomShapes.headlineTxtStyle.copyWith(
                   color: Colors.black54,
                   fontSize: 30.sp,
@@ -41,7 +40,7 @@ class _DashBoardUiState extends State<DashBoardUi> {
             ),
           ),
           InkWell(
-            onTap: () => Get.to(MyServicesScreen()),
+            onTap: () => Get.to(const DuePaymentsListsScreen()),
             child: AnimatedContainer(
               height: height,
               width: Get.width / 2,
@@ -51,7 +50,7 @@ class _DashBoardUiState extends State<DashBoardUi> {
               padding: const EdgeInsets.all(12),
               decoration: CustomShapes.boxDecoration,
               child: Text(
-                'Services',
+                'Due Payments',
                 style: CustomShapes.bodyTxtStyle,
               ),
             ),

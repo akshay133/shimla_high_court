@@ -3,12 +3,11 @@ import 'package:collapsible_sidebar/collapsible_sidebar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:high_court/config/config.dart';
 import 'package:high_court/constants/colors.dart';
 import 'package:high_court/constants/constants.dart';
-import 'package:high_court/controller/profile_controller.dart';
 import 'package:high_court/screens/login_screen.dart';
 import 'package:high_court/screens/ui/dashboard_ui.dart';
+import 'package:high_court/screens/ui/due_payment_ui.dart';
 import 'package:high_court/screens/ui/profile_ui.dart';
 import 'package:hive/hive.dart';
 import 'package:sizer/sizer.dart';
@@ -21,19 +20,13 @@ class HomeScreenMain extends StatefulWidget {
 }
 
 class _HomeScreenMainState extends State<HomeScreenMain> {
-  final profileController = Get.put(ProfileController());
   late List<CollapsibleItem> _items;
-
   var name;
-  var email;
-
   @override
   void initState() {
+    var box = Hive.box("myBox");
+    name = box.get("name");
     super.initState();
-    name = Config.name;
-    email = Config.email;
-    profileController.setName(name);
-    profileController.setEmail(email);
     _items = _generateItems;
   }
 
@@ -51,14 +44,19 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
         onPressed: () => setState(() {}),
       ),
       CollapsibleItem(
+        text: 'Due Payments',
+        icon: Icons.account_balance_wallet_outlined,
+        onPressed: () => setState(() {}),
+      ),
+      CollapsibleItem(
           text: 'Profile', icon: Icons.face, onPressed: () => setState(() {})),
       CollapsibleItem(
           text: 'Logout',
           icon: Icons.logout_outlined,
-          onPressed: () {
-            var box = Hive.box("myBox");
-            box.clear();
-            Get.off(const LoginScreen());
+          onPressed: () async {
+            await Hive.box("myBox").clear().then((value) {
+              Get.offAll(const LoginScreen());
+            });
           }),
     ];
   }
@@ -74,7 +72,7 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
         avatarImg: const CachedNetworkImageProvider(
           profileImg,
         ),
-        title: name.toString(),
+        title: name,
         onTitleTap: () {},
         body: _body(size, context),
         backgroundColor: primaryColor,
@@ -108,7 +106,8 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
           children: [
             if (_items.elementAt(0).isSelected) const DashBoardUi(),
             if (_items.elementAt(1).isSelected) const Text('Notifications'),
-            if (_items.elementAt(2).isSelected) ProfileUi(),
+            if (_items.elementAt(2).isSelected) const DuePaymentUI(),
+            if (_items.elementAt(3).isSelected) ProfileUi(),
           ],
         ),
       ),

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:high_court/constants/colors.dart';
 import 'package:high_court/constants/custom_shapes.dart';
+import 'package:high_court/controller/auth_controller.dart';
 import 'package:high_court/screens/home_screen_main.dart';
 import 'package:hive/hive.dart';
 import 'package:sizer/sizer.dart';
@@ -31,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     email
   }
 }""";
+
   final double _width = double.infinity;
   late double _height = 2.h;
 
@@ -96,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: [
                           Text(
                             "Sign In",
-                            style: _shapes.headlineTxtStyle,
+                            style: CustomShapes.headlineTxtStyle,
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -135,15 +137,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                     var result =
                                         await resultMutaion.networkResult;
                                     var box = Hive.box("myBox");
-                                    box.put("token",
-                                        result!.data!['memberLogin']['token']);
                                     box.put(
                                         "name",
-                                        result.data!['memberLogin']
+                                        result!.data!['memberLogin']
                                             ['username']);
                                     box.put("email",
                                         result.data!['memberLogin']['email']);
-                                    Get.offAll(const HomeScreenMain());
+                                    box
+                                        .put(
+                                            "token",
+                                            result.data!['memberLogin']
+                                                ['token'])
+                                        .then((value) {
+                                      Get.find<AuthController>().setToken(
+                                          result.data!['memberLogin']['token']);
+                                      Get.to(const HomeScreenMain());
+                                    });
                                   }
                                 },
                                 child: const Text('login')),

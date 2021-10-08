@@ -24,7 +24,7 @@ class CustomShapes {
     );
   }
 
-  final boxDecoration = BoxDecoration(
+  static final boxDecoration = BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(8),
       boxShadow: [
@@ -34,8 +34,8 @@ class CustomShapes {
             blurRadius: 4,
             spreadRadius: 2)
       ]);
-  final headlineTxtStyle = TextStyle(
+  static final headlineTxtStyle = TextStyle(
     fontSize: 24.sp,
   );
-  final bodyTxtStyle = TextStyle(fontSize: 20.sp, color: Colors.black38);
+  static final bodyTxtStyle = TextStyle(fontSize: 20.sp, color: Colors.black38);
 }
