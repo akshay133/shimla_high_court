@@ -2,8 +2,12 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   var token = "";
-  setToken(tkn) {
+  var name = "".obs;
+  var email = "".obs;
+  setUserData(tkn, nme, eml) {
     token = tkn;
+    name = nme;
+    email = eml;
     update();
   }
 }

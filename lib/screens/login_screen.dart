@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:high_court/constants/apis.dart';
 import 'package:high_court/constants/colors.dart';
 import 'package:high_court/constants/custom_shapes.dart';
 import 'package:high_court/controller/auth_controller.dart';
@@ -21,17 +22,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
-
-  final String query = """
-  mutation LoginMutation(\$email: String!, \$password: String!) {
-  memberLogin(email: \$email, password: \$password) {
-    id
-    token
-    username
-    avatar
-    email
-  }
-}""";
 
   final double _width = double.infinity;
   late double _height = 2.h;
@@ -56,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Mutation(
         options: MutationOptions(
-          document: gql(query),
+          document: gql(loinMutation),
           onCompleted: (result) {
             Get.snackbar("Login", "Success",
                 snackPosition: SnackPosition.BOTTOM, colorText: Colors.white);
@@ -149,8 +139,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                             result.data!['memberLogin']
                                                 ['token'])
                                         .then((value) {
-                                      Get.find<AuthController>().setToken(
-                                          result.data!['memberLogin']['token']);
+                                      Get.find<AuthController>().setUserData(
+                                          result.data!['memberLogin']['token'],
+                                          result.data!['memberLogin']
+                                                  ['username']
+                                              .toString()
+                                              .obs,
+                                          result.data!['memberLogin']['email']
+                                              .toString()
+                                              .obs);
                                       Get.to(const HomeScreenMain());
                                     });
                                   }

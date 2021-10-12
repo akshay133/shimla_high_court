@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:high_court/constants/colors.dart';
 import 'package:high_court/constants/constants.dart';
+import 'package:high_court/screens/activity_screen.dart';
 import 'package:high_court/screens/login_screen.dart';
+import 'package:high_court/screens/notification_screen.dart';
 import 'package:high_court/screens/ui/dashboard_ui.dart';
 import 'package:high_court/screens/ui/due_payment_ui.dart';
 import 'package:high_court/screens/ui/profile_ui.dart';
@@ -48,6 +50,10 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
         icon: Icons.account_balance_wallet_outlined,
         onPressed: () => setState(() {}),
       ),
+      CollapsibleItem(
+          text: 'Activities',
+          icon: Icons.local_activity_outlined,
+          onPressed: () => setState(() {})),
       CollapsibleItem(
           text: 'Profile', icon: Icons.face, onPressed: () => setState(() {})),
       CollapsibleItem(
@@ -103,11 +109,13 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
       color: Colors.blueGrey[50],
       child: SingleChildScrollView(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (_items.elementAt(0).isSelected) const DashBoardUi(),
-            if (_items.elementAt(1).isSelected) const Text('Notifications'),
+            if (_items.elementAt(1).isSelected) const NotificationUI(),
             if (_items.elementAt(2).isSelected) const DuePaymentUI(),
-            if (_items.elementAt(3).isSelected) ProfileUi(),
+            if (_items.elementAt(3).isSelected) const ActivityScreen(),
+            if (_items.elementAt(4).isSelected) ProfileUi(),
           ],
         ),
       ),

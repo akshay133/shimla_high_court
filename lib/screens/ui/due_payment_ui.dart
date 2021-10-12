@@ -40,7 +40,7 @@ class _DuePaymentUIState extends State<DuePaymentUI> {
             ),
           ),
           InkWell(
-            onTap: () => Get.to(const DuePaymentsListsScreen()),
+            onTap: () => Get.to(DuePaymentsListsScreen()),
             child: AnimatedContainer(
               height: height,
               width: Get.width / 2,

@@ -30,10 +30,11 @@ class _MyAppState extends State<MyApp> {
   var localToken;
   getTokenLocally() {
     localToken = Hive.box("myBox").get("token");
+    print("localToke:$localToken");
   }
 
   handleUi() {
-    if (Get.find<AuthController>().token == "" && localToken == "") {
+    if (Get.find<AuthController>().token == "" && localToken == null) {
       return const LoginScreen();
     } else {
       return const HomeScreenMain();
