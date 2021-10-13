@@ -8,7 +8,7 @@ import 'package:high_court/constants/apis.dart';
 import 'package:high_court/constants/colors.dart';
 import 'package:high_court/constants/custom_shapes.dart';
 import 'package:high_court/constants/timesago.dart';
-import 'package:high_court/controller/price_controller.dart';
+import 'package:high_court/controller/list_controller.dart';
 import 'package:high_court/screens/ui/bottom_sheet_ui.dart';
 import 'package:simple_moment/simple_moment.dart';
 import 'package:sizer/sizer.dart';
@@ -16,7 +16,7 @@ import 'package:sizer/sizer.dart';
 class DuePaymentsListsScreen extends StatelessWidget {
   DuePaymentsListsScreen({Key? key}) : super(key: key);
   static const platform = MethodChannel("razorpay_flutter");
-  final controller = Get.put(PriceController());
+  final controller = Get.put(ListController());
 
   @override
   Widget build(BuildContext context) {

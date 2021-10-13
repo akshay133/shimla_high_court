@@ -41,13 +41,17 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
         isSelected: true,
       ),
       CollapsibleItem(
-        text: 'Notifications',
-        icon: Icons.notifications,
+        text: 'Due Payments',
+        icon: Icons.account_balance_wallet_outlined,
         onPressed: () => setState(() {}),
       ),
       CollapsibleItem(
-        text: 'Due Payments',
-        icon: Icons.account_balance_wallet_outlined,
+          text: 'Activities',
+          icon: Icons.local_activity_outlined,
+          onPressed: () => setState(() {})),
+      CollapsibleItem(
+        text: 'Notifications',
+        icon: Icons.notifications,
         onPressed: () => setState(() {}),
       ),
       CollapsibleItem(
@@ -112,9 +116,9 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (_items.elementAt(0).isSelected) const DashBoardUi(),
-            if (_items.elementAt(1).isSelected) const NotificationUI(),
-            if (_items.elementAt(2).isSelected) const DuePaymentUI(),
-            if (_items.elementAt(3).isSelected) const ActivityScreen(),
+            if (_items.elementAt(1).isSelected) const DuePaymentUI(),
+            if (_items.elementAt(2).isSelected) const ActivityScreen(),
+            if (_items.elementAt(3).isSelected) const NotificationUI(),
             if (_items.elementAt(4).isSelected) ProfileUi(),
           ],
         ),

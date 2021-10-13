@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:high_court/constants/custom_shapes.dart';
 import 'package:high_court/screens/due_payments_lists.dart';
+import 'package:high_court/screens/payment_history_screen.dart';
 import 'package:sizer/sizer.dart';
 
 class DuePaymentUI extends StatefulWidget {
@@ -51,6 +52,27 @@ class _DuePaymentUIState extends State<DuePaymentUI> {
               decoration: CustomShapes.boxDecoration,
               child: Text(
                 'Due Payments',
+                style: CustomShapes.bodyTxtStyle,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 1.2.h,
+          ),
+          InkWell(
+            onTap: () {
+              Get.to(PaymentHistoryScreen());
+            },
+            child: AnimatedContainer(
+              height: height,
+              width: Get.width / 2,
+              curve: Curves.elasticOut,
+              alignment: Alignment.center,
+              duration: const Duration(seconds: 1),
+              padding: const EdgeInsets.all(12),
+              decoration: CustomShapes.boxDecoration,
+              child: Text(
+                'All Payments',
                 style: CustomShapes.bodyTxtStyle,
               ),
             ),

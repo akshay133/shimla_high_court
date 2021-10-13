@@ -1,73 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:high_court/constants/colors.dart';
 import 'package:high_court/constants/custom_shapes.dart';
 import 'package:high_court/controller/list_controller.dart';
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 import 'package:sizer/sizer.dart';
 
-class BottomSheetUi extends StatefulWidget {
-  BottomSheetUi({Key? key}) : super(key: key);
-
-  @override
-  State<BottomSheetUi> createState() => _BottomSheetUiState();
-}
-
-class _BottomSheetUiState extends State<BottomSheetUi> {
+class PaymentHistorySheetUi extends StatelessWidget {
+  PaymentHistorySheetUi({Key? key}) : super(key: key);
   int count = 1;
-
   double? totalPrice;
-
-  late Razorpay _razorpay;
-  @override
-  void initState() {
-    _razorpay = Razorpay();
-    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
-    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
-    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _razorpay.clear();
-    super.dispose();
-  }
-
-  void openCheckout() async {
-    var options = {
-      'key': 'rzp_test_1DP5mmOlF5G5ag',
-      'amount': totalPrice! * 100,
-      'name': 'Acme Corp.',
-      'description': 'Fine T-Shirt',
-      'prefill': {'contact': '8888888888', 'email': 'test@razorpay.com'},
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
-    try {
-      _razorpay.open(options);
-    } catch (e) {
-      debugPrint('Error: e');
-    }
-  }
-
-  void _handlePaymentSuccess(PaymentSuccessResponse response) {
-    Get.snackbar("Success", response.paymentId!);
-  }
-
-  void _handlePaymentError(PaymentFailureResponse response) {
-    Get.snackbar(
-      "ERROR",
-      response.code.toString() + "-" + response.message!,
-    );
-  }
-
-  void _handleExternalWallet(ExternalWalletResponse response) {
-    Get.snackbar("EXTERNAL_WALLET", response.walletName!);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -75,7 +15,7 @@ class _BottomSheetUiState extends State<BottomSheetUi> {
       child: Column(
         children: [
           Text(
-            'Payments',
+            'Payments History',
             style: CustomShapes.bodyTxtStyle
                 .copyWith(fontSize: 16.sp, fontWeight: FontWeight.bold),
           ),
@@ -86,7 +26,6 @@ class _BottomSheetUiState extends State<BottomSheetUi> {
                 totalPrice = _.ls
                     .map((item) => double.parse(item['price']))
                     .reduce((a, b) => a + b);
-
                 return Column(
                   children: [
                     Row(
@@ -154,21 +93,13 @@ class _BottomSheetUiState extends State<BottomSheetUi> {
                       ),
                     const Divider(),
                     Text(
-                      'Total Price:$totalPrice',
+                      'Total Paid:$totalPrice',
                       style: CustomShapes.bodyTxtStyle.copyWith(
                           fontSize: 16.sp, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(
-                      width: 40.0.w,
-                      child: ElevatedButton(
-                          onPressed: openCheckout,
-                          style:
-                              ElevatedButton.styleFrom(primary: primaryColor),
-                          child: const Text("Pay")),
-                    )
                   ],
                 );
-              }),
+              })
         ],
       ),
     );

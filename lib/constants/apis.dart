@@ -54,3 +54,20 @@ const String getActivityRepositories = """
   }
 }
   """;
+const String getPaymentRepositories = """
+ query PaymentQuery {
+  userAllPayments {
+    id
+    paymentId
+    status
+    serviceID
+    month
+    createdAt
+    paymentBilling {
+      serviceName
+      serviceId
+      price
+    }
+  }
+}
+  """;
