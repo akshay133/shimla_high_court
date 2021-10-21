@@ -51,109 +51,124 @@ class MyServicesScreen extends StatelessWidget {
           List repositories = result.data!['getUserServices'];
 
           print("data:$repositories");
-          return ListView.builder(
-              itemCount: repositories.length,
-              itemBuilder: (ctx, index) {
-                final repository = repositories[index];
-                Moment rawDate = Moment.parse(repository['createdAt']);
-                var createdAt = TimeAgo.timeAgoSinceDate(
-                    rawDate.format("dd-MM-yyyy h:mma"));
-                print("date:${rawDate.format("dd-MM-yyyy h:mma")}");
-                return AnimationConfiguration.staggeredList(
-                  position: index,
-                  child: SlideAnimation(
-                    child: FadeInAnimation(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: CustomShapes.boxDecoration,
-                          child: Column(
-                            children: [
-                              Row(
+          return repositories.isEmpty
+              ? Center(
+                  child: Text(
+                    'Sorry! No data found',
+                    style: CustomShapes.bodyTxtStyle,
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: repositories.length,
+                  itemBuilder: (ctx, index) {
+                    final repository = repositories[index];
+                    Moment rawDate = Moment.parse(repository['createdAt']);
+                    var createdAt = TimeAgo.timeAgoSinceDate(
+                        rawDate.format("dd-MM-yyyy h:mma"));
+                    print("date:${rawDate.format("dd-MM-yyyy h:mma")}");
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      child: SlideAnimation(
+                        child: FadeInAnimation(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: CustomShapes.boxDecoration,
+                              child: Column(
                                 children: [
-                                  Text(
-                                    "Unique Id:",
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Unique Id:",
+                                        style: CustomShapes.bodyTxtStyle
+                                            .copyWith(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width: 1.2.w,
+                                      ),
+                                      Text(
+                                        "${repository['uniq']}",
+                                        style:
+                                            CustomShapes.bodyTxtStyle.copyWith(
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(
-                                    width: 1.2.w,
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Item name:",
+                                        style: CustomShapes.bodyTxtStyle
+                                            .copyWith(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width: 1.2.w,
+                                      ),
+                                      Text(
+                                        "${repository['servicesName']}",
+                                        style:
+                                            CustomShapes.bodyTxtStyle.copyWith(
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    "${repository['uniq']}",
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Item price:",
+                                        style: CustomShapes.bodyTxtStyle
+                                            .copyWith(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width: 1.2.w,
+                                      ),
+                                      Text(
+                                        "${repository['servicesPrice']}",
+                                        style:
+                                            CustomShapes.bodyTxtStyle.copyWith(
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Created at:",
+                                        style: CustomShapes.bodyTxtStyle
+                                            .copyWith(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width: 1.2.w,
+                                      ),
+                                      Text(
+                                        rawDate.format("dd-MM-yyyy h:mma"),
+                                        style:
+                                            CustomShapes.bodyTxtStyle.copyWith(
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "Item name:",
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    width: 1.2.w,
-                                  ),
-                                  Text(
-                                    "${repository['servicesName']}",
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "Item price:",
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    width: 1.2.w,
-                                  ),
-                                  Text(
-                                    "${repository['servicesPrice']}",
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "Created at:",
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    width: 1.2.w,
-                                  ),
-                                  Text(
-                                    rawDate.format("dd-MM-yyyy h:mma"),
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              });
+                    );
+                  });
         },
       ),
     );

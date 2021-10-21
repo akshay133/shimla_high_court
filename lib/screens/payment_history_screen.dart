@@ -40,95 +40,107 @@ class PaymentHistoryScreen extends StatelessWidget {
           }
           List repositories = result.data!['userAllPayments'];
           print("data:$repositories");
-          return ListView.builder(
-              itemCount: repositories.length,
-              itemBuilder: (ctx, index) {
-                final repository = repositories[index];
-                final ls = repository['paymentBilling'] as List;
-                Moment rawDate = Moment.parse(repository['createdAt']);
-                var createdAt = TimeAgo.timeAgoSinceDate(
-                    rawDate.format("dd-MM-yyyy h:mma"));
-                var month = rawDate.format("MMM");
-                return AnimationConfiguration.staggeredList(
-                  position: index,
-                  child: SlideAnimation(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: CustomShapes.boxDecoration,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Status:',
-                                  style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  width: 1.2.w,
-                                ),
-                                Text(
-                                  "${repository['status']}",
-                                  style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp, color: Colors.green),
-                                ),
-                              ],
-                            ),
-                            Row(
+          return repositories.isEmpty
+              ? Center(
+                  child: Text(
+                    'Sorry! No data found',
+                    style: CustomShapes.bodyTxtStyle,
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: repositories.length,
+                  itemBuilder: (ctx, index) {
+                    final repository = repositories[index];
+                    final ls = repository['paymentBilling'] as List;
+                    Moment rawDate = Moment.parse(repository['createdAt']);
+                    var createdAt = TimeAgo.timeAgoSinceDate(
+                        rawDate.format("dd-MM-yyyy h:mma"));
+                    var month = rawDate.format("MMM");
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      child: SlideAnimation(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(8.0),
+                            decoration: CustomShapes.boxDecoration,
+                            child: Column(
                               children: [
                                 Row(
                                   children: [
-                                    Text('Month:',
+                                    Text(
+                                      'Status:',
+                                      style: CustomShapes.bodyTxtStyle.copyWith(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(
+                                      width: 1.2.w,
+                                    ),
+                                    Text(
+                                      "${repository['status']}",
+                                      style: CustomShapes.bodyTxtStyle.copyWith(
+                                          fontSize: 14.sp, color: Colors.green),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text('Month:',
+                                            style: CustomShapes.bodyTxtStyle
+                                                .copyWith(
+                                                    fontSize: 14.sp,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                        Text(month,
+                                            style: CustomShapes.bodyTxtStyle
+                                                .copyWith(
+                                              fontSize: 14.sp,
+                                            )),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    Expanded(
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: primaryColor),
+                                          onPressed: () {
+                                            controller.setService(ls.obs);
+                                            Get.bottomSheet(
+                                                PaymentHistorySheetUi(),
+                                                backgroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12)));
+                                          },
+                                          child: const Text("Details")),
+                                    )
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text('Created at:',
                                         style: CustomShapes.bodyTxtStyle
                                             .copyWith(
                                                 fontSize: 14.sp,
                                                 fontWeight: FontWeight.bold)),
-                                    Text(month,
+                                    Text(createdAt,
                                         style:
                                             CustomShapes.bodyTxtStyle.copyWith(
                                           fontSize: 14.sp,
-                                        )),
+                                        ))
                                   ],
                                 ),
-                                const Spacer(),
-                                Expanded(
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          primary: primaryColor),
-                                      onPressed: () {
-                                        controller.setService(ls.obs);
-                                        Get.bottomSheet(PaymentHistorySheetUi(),
-                                            backgroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12)));
-                                      },
-                                      child: const Text("Details")),
-                                )
                               ],
                             ),
-                            Row(
-                              children: [
-                                Text('Created at:',
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.bold)),
-                                Text(createdAt,
-                                    style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp,
-                                    ))
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              });
+                    );
+                  });
         },
       ),
     );

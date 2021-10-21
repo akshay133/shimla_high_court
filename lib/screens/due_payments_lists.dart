@@ -57,120 +57,138 @@ class DuePaymentsListsScreen extends StatelessWidget {
           }
           List repositories = result.data!['getUserPayments'];
           print("data:$repositories");
-          return ListView.builder(
-            itemCount: repositories.length,
-            itemBuilder: (ctx, index) {
-              final repository = repositories[index];
-              final ls = repository['list'] as List;
-              Moment rawDate = Moment.parse(repository['createdAt']);
-              var createdAt =
-                  TimeAgo.timeAgoSinceDate(rawDate.format("dd-MM-yyyy h:mma"));
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                child: SlideAnimation(
-                  child: FadeInAnimation(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: CustomShapes.boxDecoration,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  'Status:',
-                                  style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  width: 1.2.w,
-                                ),
-                                Text(
-                                  "${repository['status']}",
-                                  style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp, color: Colors.red),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  'Event:',
-                                  style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "One Month Payment",
-                                  style: CustomShapes.bodyTxtStyle.copyWith(
-                                    fontSize: 14.sp,
+          return repositories.isEmpty
+              ? Center(
+                  child: Text(
+                    'Sorry! No data found',
+                    style: CustomShapes.bodyTxtStyle,
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: repositories.length,
+                  itemBuilder: (ctx, index) {
+                    final repository = repositories[index];
+                    final ls = repository['list'] as List;
+                    Moment rawDate = Moment.parse(repository['createdAt']);
+                    var createdAt = TimeAgo.timeAgoSinceDate(
+                        rawDate.format("dd-MM-yyyy h:mma"));
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      child: SlideAnimation(
+                        child: FadeInAnimation(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: CustomShapes.boxDecoration,
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Status:',
+                                        style: CustomShapes.bodyTxtStyle
+                                            .copyWith(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        width: 1.2.w,
+                                      ),
+                                      Text(
+                                        "${repository['status']}",
+                                        style: CustomShapes.bodyTxtStyle
+                                            .copyWith(
+                                                fontSize: 14.sp,
+                                                color: Colors.red),
+                                      ),
+                                    ],
                                   ),
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  "Total Service:",
-                                  style: CustomShapes.bodyTxtStyle.copyWith(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  "${ls.length}",
-                                  style: CustomShapes.bodyTxtStyle.copyWith(
-                                    fontSize: 14.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Time:",
-                                      style: CustomShapes.bodyTxtStyle.copyWith(
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Event:',
+                                        style: CustomShapes.bodyTxtStyle
+                                            .copyWith(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        "One Month Payment",
+                                        style:
+                                            CustomShapes.bodyTxtStyle.copyWith(
                                           fontSize: 14.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      rawDate.format("dd-MM-yyyy h:mma"),
-                                      style: CustomShapes.bodyTxtStyle.copyWith(
-                                        fontSize: 14.sp,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Total Service:",
+                                        style: CustomShapes.bodyTxtStyle
+                                            .copyWith(
+                                                fontSize: 14.sp,
+                                                fontWeight: FontWeight.bold),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                Expanded(
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: primaryColor,
+                                      Text(
+                                        "${ls.length}",
+                                        style:
+                                            CustomShapes.bodyTxtStyle.copyWith(
+                                          fontSize: 14.sp,
+                                        ),
                                       ),
-                                      onPressed: () {
-                                        controller.setService(ls.obs);
-                                        Get.bottomSheet(BottomSheetUi(),
-                                            backgroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12)));
-                                      },
-                                      child: const Text('View')),
-                                )
-                              ],
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Time:",
+                                            style: CustomShapes.bodyTxtStyle
+                                                .copyWith(
+                                                    fontSize: 14.sp,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                          Text(
+                                            rawDate.format("dd-MM-yyyy h:mma"),
+                                            style: CustomShapes.bodyTxtStyle
+                                                .copyWith(
+                                              fontSize: 14.sp,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const Spacer(),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: primaryColor,
+                                            ),
+                                            onPressed: () {
+                                              controller.setService(ls.obs);
+                                              Get.bottomSheet(BottomSheetUi(),
+                                                  backgroundColor: Colors.white,
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12)));
+                                            },
+                                            child: const Text('View')),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
+                    );
+                  },
+                );
         },
       ),
     );
