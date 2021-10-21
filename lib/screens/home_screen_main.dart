@@ -55,10 +55,6 @@ class _HomeScreenMainState extends State<HomeScreenMain> {
         onPressed: () => setState(() {}),
       ),
       CollapsibleItem(
-          text: 'Activities',
-          icon: Icons.local_activity_outlined,
-          onPressed: () => setState(() {})),
-      CollapsibleItem(
           text: 'Profile', icon: Icons.face, onPressed: () => setState(() {})),
       CollapsibleItem(
           text: 'Logout',

@@ -30,61 +30,70 @@ class ActivityScreen extends StatelessWidget {
             );
           }
           List repositories = result.data!['getUserActivities'];
-          print("data:$repositories");
+          print("data:${repositories}");
           return SizedBox(
             height: Get.height,
-            child: ListView.builder(
-                itemCount: repositories.length,
-                itemBuilder: (ctx, index) {
-                  final repository = repositories[index];
-                  Moment rawDate = Moment.parse(repository['createdAt']);
-                  var createdAt = TimeAgo.timeAgoSinceDate(
-                      rawDate.format("dd-MM-yyyy h:mma"));
-                  return AnimationConfiguration.staggeredList(
-                    position: index,
-                    child: SlideAnimation(
-                      child: FadeInAnimation(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            decoration: CustomShapes.boxDecoration,
-                            child: Column(
-                              children: [
-                                Row(
+            child: repositories.isEmpty
+                ? Center(
+                    child: Text(
+                      'Sorry! No data found',
+                      style: CustomShapes.bodyTxtStyle,
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: repositories.length,
+                    itemBuilder: (ctx, index) {
+                      final repository = repositories[index];
+                      Moment rawDate = Moment.parse(repository['createdAt']);
+                      var createdAt = TimeAgo.timeAgoSinceDate(
+                          rawDate.format("dd-MM-yyyy h:mma"));
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        child: SlideAnimation(
+                          child: FadeInAnimation(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                decoration: CustomShapes.boxDecoration,
+                                child: Column(
                                   children: [
-                                    Expanded(
-                                      child: Text('${repository['message']}',
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                              '${repository['message']}',
+                                              style: CustomShapes.bodyTxtStyle
+                                                  .copyWith(
+                                                fontSize: 14.sp,
+                                              )),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Created at:",
                                           style: CustomShapes.bodyTxtStyle
                                               .copyWith(
-                                            fontSize: 14.sp,
-                                          )),
-                                    ),
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          rawDate.format("dd-MM-yyyy h:mma"),
+                                          style: CustomShapes.bodyTxtStyle
+                                              .copyWith(fontSize: 14.sp),
+                                        ),
+                                      ],
+                                    )
                                   ],
                                 ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Created at:",
-                                      style: CustomShapes.bodyTxtStyle.copyWith(
-                                          fontSize: 14.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      rawDate.format("dd-MM-yyyy h:mma"),
-                                      style: CustomShapes.bodyTxtStyle
-                                          .copyWith(fontSize: 14.sp),
-                                    ),
-                                  ],
-                                )
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                }),
+                      );
+                    }),
           );
         });
   }
